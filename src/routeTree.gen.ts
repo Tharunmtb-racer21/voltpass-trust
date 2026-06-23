@@ -9,18 +9,26 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ScanRouteImport } from './routes/scan'
 import { Route as AuthRouteRouteImport } from './routes/auth/route'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PassportIdRouteImport } from './routes/passport/$id'
 import { Route as AuthResetRouteImport } from './routes/auth/reset'
 import { Route as AuthRegisterRouteImport } from './routes/auth/register'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthForgotRouteImport } from './routes/auth/forgot'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedBatteriesIndexRouteImport } from './routes/_authenticated/batteries/index'
 import { Route as AuthenticatedBatteriesRegisterRouteImport } from './routes/_authenticated/batteries/register'
 import { Route as AuthenticatedBatteriesIdRouteImport } from './routes/_authenticated/batteries/$id'
 
+const ScanRoute = ScanRouteImport.update({
+  id: '/scan',
+  path: '/scan',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRouteRoute = AuthRouteRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -33,6 +41,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PassportIdRoute = PassportIdRouteImport.update({
+  id: '/passport/$id',
+  path: '/passport/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthResetRoute = AuthResetRouteImport.update({
@@ -60,6 +73,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedBatteriesIndexRoute =
   AuthenticatedBatteriesIndexRouteImport.update({
     id: '/batteries/',
@@ -82,11 +100,14 @@ const AuthenticatedBatteriesIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
+  '/scan': typeof ScanRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/auth/forgot': typeof AuthForgotRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/auth/reset': typeof AuthResetRoute
+  '/passport/$id': typeof PassportIdRoute
   '/batteries/$id': typeof AuthenticatedBatteriesIdRoute
   '/batteries/register': typeof AuthenticatedBatteriesRegisterRoute
   '/batteries/': typeof AuthenticatedBatteriesIndexRoute
@@ -94,11 +115,14 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
+  '/scan': typeof ScanRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/auth/forgot': typeof AuthForgotRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/auth/reset': typeof AuthResetRoute
+  '/passport/$id': typeof PassportIdRoute
   '/batteries/$id': typeof AuthenticatedBatteriesIdRoute
   '/batteries/register': typeof AuthenticatedBatteriesRegisterRoute
   '/batteries': typeof AuthenticatedBatteriesIndexRoute
@@ -108,11 +132,14 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
+  '/scan': typeof ScanRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/auth/forgot': typeof AuthForgotRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/auth/reset': typeof AuthResetRoute
+  '/passport/$id': typeof PassportIdRoute
   '/_authenticated/batteries/$id': typeof AuthenticatedBatteriesIdRoute
   '/_authenticated/batteries/register': typeof AuthenticatedBatteriesRegisterRoute
   '/_authenticated/batteries/': typeof AuthenticatedBatteriesIndexRoute
@@ -122,11 +149,14 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/scan'
+    | '/admin'
     | '/dashboard'
     | '/auth/forgot'
     | '/auth/login'
     | '/auth/register'
     | '/auth/reset'
+    | '/passport/$id'
     | '/batteries/$id'
     | '/batteries/register'
     | '/batteries/'
@@ -134,11 +164,14 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/scan'
+    | '/admin'
     | '/dashboard'
     | '/auth/forgot'
     | '/auth/login'
     | '/auth/register'
     | '/auth/reset'
+    | '/passport/$id'
     | '/batteries/$id'
     | '/batteries/register'
     | '/batteries'
@@ -147,11 +180,14 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/scan'
+    | '/_authenticated/admin'
     | '/_authenticated/dashboard'
     | '/auth/forgot'
     | '/auth/login'
     | '/auth/register'
     | '/auth/reset'
+    | '/passport/$id'
     | '/_authenticated/batteries/$id'
     | '/_authenticated/batteries/register'
     | '/_authenticated/batteries/'
@@ -161,10 +197,19 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
+  ScanRoute: typeof ScanRoute
+  PassportIdRoute: typeof PassportIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/scan': {
+      id: '/scan'
+      path: '/scan'
+      fullPath: '/scan'
+      preLoaderRoute: typeof ScanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -184,6 +229,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/passport/$id': {
+      id: '/passport/$id'
+      path: '/passport/$id'
+      fullPath: '/passport/$id'
+      preLoaderRoute: typeof PassportIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth/reset': {
@@ -221,6 +273,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/batteries/': {
       id: '/_authenticated/batteries/'
       path: '/batteries'
@@ -246,6 +305,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedBatteriesIdRoute: typeof AuthenticatedBatteriesIdRoute
   AuthenticatedBatteriesRegisterRoute: typeof AuthenticatedBatteriesRegisterRoute
@@ -253,6 +313,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedBatteriesIdRoute: AuthenticatedBatteriesIdRoute,
   AuthenticatedBatteriesRegisterRoute: AuthenticatedBatteriesRegisterRoute,
@@ -284,6 +345,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRouteRoute: AuthRouteRouteWithChildren,
+  ScanRoute: ScanRoute,
+  PassportIdRoute: PassportIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
