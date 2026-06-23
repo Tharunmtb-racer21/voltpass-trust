@@ -45,6 +45,7 @@ function Register() {
     const { data: { user } } = await supabase.auth.getUser();
     const { data, error } = await supabase.from("batteries").insert({
       ...f,
+      chemistry: f.chemistry as "NMC" | "LFP" | "NCA" | "LTO" | "LMO",
       trust_score: score,
       owner_id: user?.id ?? null,
     }).select("id").single();
